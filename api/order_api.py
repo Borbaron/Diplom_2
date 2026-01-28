@@ -3,12 +3,15 @@ import allure
 from url import Url
 
 class OrderApiClient:
-    def __init__(self, token=None):
+    def __init__(self):
         self.base_url = Url.BASE_URL
-        self.token = token
 
     @allure.step("Создание заказа")
-    def create_order(self, ingredients_data):
+    def create_order(self, order_data, auth_token=None):  # Добавляем auth_token
         url = Url.ORDER_CREATE
-        response = requests.post(url, data=ingredients_data)
+        headers = {}
+        if auth_token: # Если токен передан, добавляем заголовок авторизации
+            headers['Authorization'] = f'Bearer {auth_token}'
+
+        response = requests.post(url, json=order_data, headers=headers)  # Используем headers
         return response
